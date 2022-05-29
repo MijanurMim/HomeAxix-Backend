@@ -46,11 +46,11 @@ exports.createProject = catchAsyncErrors(async (req, res, next) => {
 
 // Get All Project
 exports.getAllProjects = catchAsyncErrors(async (req, res) => {
-  const resultPerPage = 6;
+  const resultPerPage = 12;
   const projectsCount = await Project.countDocuments();
 
   const apiFeature = new ApiFeatures(Project.find(), req.query)
-
+    .search()
     .filter()
     .pagination(resultPerPage);
 
@@ -66,11 +66,21 @@ exports.getAllProjects = catchAsyncErrors(async (req, res) => {
 
 // Get All Projects (Admin)
 exports.getAdminProjects = catchAsyncErrors(async (req, res) => {
-  const projects = await Project.find();
+  const resultPerPage = 8;
+  const projectsCount = await Project.countDocuments();
+
+  const apiFeature = new ApiFeatures(Project.find(), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+
+  const projects = await apiFeature.query;
 
   res.status(200).json({
     success: true,
     projects,
+    projectsCount,
+    resultPerPage,
   });
 });
 
@@ -97,28 +107,35 @@ exports.updateProject = catchAsyncErrors(async (req, res) => {
   }
 
   // cloudinary Settings
-  let images = req.body.images;
+  let images = [];
+
+  if (typeof req.body.images === "string") {
+    images.push(req.body.images);
+  } else {
+    images = req.body.images;
+  }
 
   if (images !== undefined) {
     // Deleting Images From Cloudinary
     for (let i = 0; i < project.images.length; i++) {
       await cloudinary.v2.uploader.destroy(project.images[i].public_id);
     }
+
+    const imagesLinks = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.v2.uploader.upload(images[i], {
+        folder: "projects",
+      });
+
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    }
+
+    req.body.images = imagesLinks;
   }
-  const imagesLinks = [];
-
-  for (let i = 0; i < images.length; i++) {
-    const result = await cloudinary.v2.uploader.upload(images[i], {
-      folder: "projects",
-    });
-
-    imagesLinks.push({
-      public_id: result.public_id,
-      url: result.secure_url,
-    });
-  }
-
-  req.body.images = imagesLinks;
 
   project = await Project.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

@@ -15,12 +15,12 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [validator.isEmail, "Please Enter a Valid Email"],
   },
-  password: {
-    type: String,
-    required: [true, "Please Enter Your Password"],
-    minlength: [8, "Password Should be Greater Than 8 Characters"],
-    select: false,
-  },
+  // password: {
+  //   type: String,
+  //   required: [true, "Please Enter Your Password"],
+  //   minlength: [8, "Password Should be Greater Than 8 Characters"],
+  //   select: false,
+  // },
 
   role: { type: String, default: "user" },
   createdAt: { type: Date, default: Date.now },

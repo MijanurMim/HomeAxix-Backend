@@ -1,7 +1,7 @@
 const admin = require("../Firebase/FirebaseAdmin");
 
 exports.AuthCheck = async (req, res, next) => {
-  // console.log(req.headers);
+  console.log(req.headers);
 
   try {
     const firebaseUser = await admin

@@ -1,14 +1,14 @@
 const express = require("express");
 const {
   getAllProjects,
-  getAdminProjects,
+
   createProject,
   updateProject,
   deleteProject,
   getProjectDetails,
 } = require("../controllers/projectController");
 const { AdminCheckMiddleWare } = require("../middleware/AdminMiddleWare");
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
+
 const { AuthCheck } = require("../middleware/AuthMiddleware");
 
 const router = express.Router();

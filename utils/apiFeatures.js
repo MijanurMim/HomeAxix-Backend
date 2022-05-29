@@ -5,19 +5,19 @@ class ApiFeatures {
   }
 
   //   Search Products
-  // search() {
-  //   const keyword = this.queryStr.keyword
-  //     ? {
-  //         name: {
-  //           $regex: this.queryStr.keyword,
-  //           $options: "i",
-  //         },
-  //       }
-  //     : {};
+  search() {
+    const keyword = this.queryStr.keyword
+      ? {
+          name: {
+            $regex: this.queryStr.keyword,
+            $options: "i",
+          },
+        }
+      : {};
 
-  //   this.query = this.query.find({ ...keyword });
-  //   return this;
-  // }
+    this.query = this.query.find({ ...keyword });
+    return this;
+  }
 
   //   Filter Products By Category
   filter() {
